@@ -1,0 +1,1 @@
+Código: 001 | Descrição: cebola | Categoria: Hortifruti | Estoque: 200.00kg | Valor de compra: R$1.00 | Valor de venda: R$1.50 
