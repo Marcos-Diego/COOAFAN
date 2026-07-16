@@ -1,4 +1,5 @@
 import string
+import tkinter as tk
 
 #============================================================
 #=========================== Login ==========================
@@ -31,9 +32,9 @@ def nova_conta():
 
 
 
-def login():
-    user = input("Nome de usuario ou E-mail: ")
-    senha = input("Senha: ")
+def login(user, senha):
+    """ user = input("Nome de usuario ou E-mail: ")
+    senha = input("Senha: ") """
     
     try:
         funcionarios = open("funcionarios.txt", "r", encoding="utf-8")
@@ -50,18 +51,20 @@ def login():
                 dados_email = info[2].split(": ")[1]
 
                 if (user == dados_user or user == dados_email) and senha == dados_senha:
-                    print("Usuario encontrado!")
-                    break
+                    texto(tela_login, "Usuario encontrado!")
+
+                    return True
             else:  
                 print("usuario ou senha incorretos")
     except FileNotFoundError:
-        print("Arquivo não encontrado")
+        texto(tela_login, "Arquivo não encontrado")
+        
 
 #============================================================
 #========================= Produtos =========================
 #============================================================
 
-def produto():
+def cadastra_produto():
     try:
         codigo = input("Código: ")
         descricao = input("Descrição: ")
@@ -83,7 +86,7 @@ def produto():
         if unidade < 1 or unidade > 3: raise(ValueError("A opção não é um valor valido."))
 
         armazem = float(input("Estoque atual: "))
-        compra = float(input("Valor de venda: R$"))
+        compra = float(input("Valor de compra: R$"))
         venda = float(input("Valor de venda: R$"))
     except:
         print("Dado não fornecido corretamente!")
@@ -96,12 +99,79 @@ def produto():
             categoria = "Gelados"
         
         if unidade == 1:
-            unidade == "Kg"
+            unidade = "Kg"
         elif unidade == 2:
-            unidade == "L"
+            unidade = "L"
         else: 
-            unidade == "Unid"
+            unidade = "Unid"
 
-        arquivo = open("Produtos", "a", encoding="utf-8")
-        arquivo.write(f"Código: {codigo} | Descrição: {descricao} | Categoria: {categoria} {unidade} | Estoque: {armazem} | Valor de venda: R${compra:.2f} | Valor de venda: R${venda:.2f} \n")
+        arquivo = open("produtos.txt", "a", encoding="utf-8")
+        arquivo.write(f"Código: {codigo} | Descrição: {descricao} | Categoria: {categoria} | Estoque: {armazem:.2f}{unidade} | Valor de venda: R${compra:.2f} | Valor de venda: R${venda:.2f} \n")
         arquivo.close()
+
+        print("Produto cadastrado")
+
+def lista_produto():
+    try:
+        produtos = open("produtos.txt", "r", encoding="utf-8")
+        dados = produtos.read()
+        produtos.close()
+    except:
+        print("Lista de produtos não encontrada!")
+    else:
+        print(dados)
+
+#============================================================
+#========================== Tkinter =========================
+#============================================================
+
+interface = tk.Tk()
+interface.geometry("800x500")
+interface.title("Sistema de Produtos")
+
+
+def telas(tela, verdade):
+    if verdade == True:
+        tela_login.pack_forget()
+        tela_cconta.pack_forget()
+
+        tela.pack(fill="both", expand=True)
+    else:
+        texto(tela, "Dados incorretos")
+        
+
+def texto(tela, conteudo):
+    mensagem = tk.Label(tela, text=f"{conteudo}")
+    mensagem.pack()
+
+#===================== Frame 1 - Login ======================
+
+tela_login = tk.Frame(interface)
+
+texto(tela_login, "Usúario ou E-mail: ")
+user = tk.Entry(tela_login)
+user.pack()
+
+texto(tela_login, "Senha: ")
+senha = tk.Entry(tela_login)
+senha.pack()
+
+def confirmar():
+    user_confirme = user.get()
+    senha_confirme = senha.get()
+
+    verdade = login(user_confirme, senha_confirme)
+    telas(tela_login, verdade)
+
+botao_confirmar = tk.Button(tela_login, text="Confirmar", command=confirmar)
+botao_confirmar.pack()
+
+#=================== Frame 2 - Criar conta ==================
+tela_cconta = tk.Frame(interface)
+
+texto(tela_cconta, "Sucesso!!!")
+
+telas(tela_login, True)
+                 
+interface.mainloop()
+    
