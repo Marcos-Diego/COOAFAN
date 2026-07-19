@@ -1,0 +1,23 @@
+Etapa 1 – MVP (2 a 3 meses)
+Login de usuários.
+Cadastro de cooperados.
+Cadastro de produtos.
+Controle de contratos (PNAE, PAA, CONAB etc.).
+Registro de entregas.
+Financeiro (receitas, despesas, contas a pagar e receber).
+Pagamentos aos cooperados.
+Relatórios básicos.
+
+Etapa 2
+Estoque.
+Prestação de contas por projeto.
+Geração automática de recibos e PDFs.
+Dashboard com gráficos.
+Controle de documentos.
+
+Etapa 3
+Aplicativo para cooperados.
+Notificações.
+Assinatura eletrônica.
+Integração com bancos e PIX.
+Integração com sistemas governamentais, quando possível.

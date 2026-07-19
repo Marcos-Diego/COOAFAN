@@ -1,6 +1,6 @@
 import string
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import ttk
 
 #============================================================
 #===================== conta - nova conta ===================
@@ -86,8 +86,15 @@ def lista_produto():
 #============================================================
 
 interface = tk.Tk()
-interface.geometry("800x500")
+interface.geometry("1200x500")
 interface.title("Sistema de Produtos")
+
+tela_login = tk.Frame(interface)
+tela_cconta = tk.Frame(interface)
+tela_menu = tk.Frame(interface)
+tela_produtos = tk.Frame(interface)
+tela_registrar = tk.Frame(interface)
+
 
 
 def telas(tela):
@@ -98,23 +105,34 @@ def telas(tela):
     tela_registrar.pack_forget()
 
     tela.pack(fill="both", expand=True)
-
+    
+    """    tela.grid_rowconfigure(0, weight=1)
+        tela.grid_rowconfigure(2, weight=1)
+        tela.grid_columnconfigure(0, weight=1)
+        tela.grid_columnconfigure(3, weight=1)
+    """
         
 
 def texto(tela, conteudo, px):
     mensagem = tk.Label(tela, text=f"{conteudo}")
     mensagem.pack(pady=(px))
 
+def texto_grid(tela, conteudo, linha, coluna):
+    mensagem = tk.Label(tela, text=f"{conteudo}")
+    mensagem.grid(row=linha, column=coluna)
 
-def botao(tela, texto, command, px):
-    botao_confirmar = tk.Button(tela, text=f"{texto}", command=command)
-    botao_confirmar.pack(pady=(px))
+
+def botao(tipo, tela, texto, destino, px):
+    if tipo == "normal":
+        botao_confirmar = tk.Button(tela, text=f"{texto}", command=destino)
+        botao_confirmar.pack(pady=(px))
+    elif tipo == "tela":
+        tk.Button(tela, text=f"{texto}", command=lambda: telas(destino)).pack(pady=px)
+
 
 
 
 #===================== Frame 1 - Login ======================
-
-tela_login = tk.Frame(interface)
 
 texto(tela_login, "Usúario ou E-mail: ", 10)
 user = tk.Entry(tela_login)
@@ -132,12 +150,11 @@ def conf_login():
     login(user_confirme, senha_confirme)
 
 
-botao(tela_login, "Entrar", conf_login, 50)
+botao("normal", tela_login, "Entrar", conf_login, 50)
+botao("tela", tela_login, "Criar conta", tela_cconta, 1)
 
-tk.Button(tela_login, text="Criar conta", command=lambda: telas(tela_cconta)).pack(pady=(1))
 
 #=================== Frame 2 - Criar conta ==================
-tela_cconta = tk.Frame(interface)
 
 texto(tela_cconta, "Usúario: ", 10)
 c_user = tk.Entry(tela_cconta)
@@ -164,18 +181,17 @@ def conf_criacao():
 
     nova_conta(user, email, senha, senha_conf)
 
-botao(tela_cconta, "Registrar", conf_criacao, 10)
-tk.Button(tela_cconta, text="Login", command=lambda: telas(tela_login)).pack()
+botao("normal", tela_cconta, "Registrar", conf_criacao, 10)
+botao("tela", tela_cconta, "Login", tela_login, 0)
+
 
 #=================== Frame 3 - menu ==================
-tela_menu = tk.Frame(interface)
 
-tk.Button(tela_menu, text="Ver produtos", command=lambda: telas(tela_produtos)).pack(pady=(50))
-tk.Button(tela_menu, text="Registrar", command=lambda: telas(tela_registrar)).pack(pady=(5))
-tk.Button(tela_menu, text="Sair", command=lambda: telas(tela_login)).pack(pady=(50))
+botao("tela", tela_menu, "Ver produtos", tela_produtos, 50)
+botao("tela", tela_menu, "Registrar", tela_registrar, 5)
+botao("tela", tela_menu, "Sair", tela_login, 50)
 
 #=================== Frame 4 - ver produtos ==================
-tela_produtos = tk.Frame(interface)
 
 """ produtos = open("produtos.txt", "r", encoding="utf-8")
 lista = produtos.read()
@@ -183,45 +199,42 @@ produtos.close()
 
 texto(tela_produtos, lista, 10) """
 
-tk.Button(tela_produtos, text="Sair", command=lambda: telas(tela_menu)).pack(pady=5) 
+botao("tela", tela_produtos, "Sair", tela_menu, 5) 
 
 
 #=================== Frame 5 - Registrar ==================
-tela_registrar = tk.Frame(interface)
 
-texto(tela_registrar, "Código: ", 10)
+texto_grid(tela_registrar, "Código: ", 0, 1)
 codigo = tk.Entry(tela_registrar)
-codigo.pack(pady=(1))
+codigo.grid(row=0, column=2)
 
-texto(tela_registrar, "Descrição: ", 10)
+texto_grid(tela_registrar, "Descrição: ", 0, 4)
 descricao = tk.Entry(tela_registrar)
-descricao.pack(pady=(1))
+descricao.grid(row=0, column=5)
 
-texto(tela_registrar, "Categoria: ", 10)
-categoria = tk.Listbox(tela_registrar, exportselection=False)
-categoria.pack(pady=(1))
-categoria.insert(tk.END, "Hortifruti")
-categoria.insert(tk.END, "Carnes")
-categoria.insert(tk.END, "Gelados")
+texto_grid(tela_registrar, "Categoria: ", 0, 7)
+categoria_opcoes = ["Hortifruti", "Carnes", "Gelados"]
+categoria = ttk.Combobox(tela_registrar, values=categoria_opcoes, state="readonly")
+categoria.grid(row=0, column=8)
+categoria.current(0)
 
-texto(tela_registrar, "Meio de medidade: ", 10)
-medida = tk.Listbox(tela_registrar, exportselection=False)
-medida.pack(pady=(1))
-medida.insert(tk.END, "kg")
-medida.insert(tk.END, "L")
-medida.insert(tk.END, "Unid.")
+texto_grid(tela_registrar, "Meio de medidade: ", 3, 4)
+medida_opcoes = ["Kg", "L", "unid."]
+medida = ttk.Combobox(tela_registrar, values=medida_opcoes, state="readonly")
+medida.grid(row=3, column=5)
+medida.current(0)
 
-texto(tela_registrar, "Estoque atual: ", 10)
+texto_grid(tela_registrar, "Estoque atual: ", 3, 0)
 armazem = tk.Entry(tela_registrar)
-armazem.pack(pady=(1))
+armazem.grid(row=3, column=1)
 
-texto(tela_registrar, "Valor de compra: ", 10)
+texto_grid(tela_registrar, "Valor de compra: ", 5, 0)
 compra = tk.Entry(tela_registrar)
-compra.pack(pady=(1))
+compra.grid(row=5, column=1)
 
-texto(tela_registrar, "Valor de venda: ", 10)
+texto_grid(tela_registrar, "Valor de venda: ", 5, 3)
 venda = tk.Entry(tela_registrar)
-venda.pack(pady=(1))
+venda.grid(row=5, column=4)
 
 
 def conf_registro():
@@ -240,11 +253,10 @@ def conf_registro():
 
 
 botao_regitrar = tk.Button(tela_registrar, text="registrar", command=conf_registro)
-botao_regitrar.pack(side=tk.LEFT, padx=500, pady=5)
+botao_regitrar.grid(row=7, column=4)
 
-tk.Button(tela_registrar, text="Sair", command=lambda: telas(tela_menu)).pack(side=tk.LEFT, padx=0, pady=5)
+tk.Button(tela_registrar, text="Sair", command=lambda: telas(tela_menu)).grid(row=7, column=5)
 
-telas(tela_login)
-                 
+telas(tela_registrar)                 
 interface.mainloop()
     
